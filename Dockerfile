@@ -23,5 +23,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the code
 COPY . .
 
-# Command to run the bot
-CMD ["python", "headless_run.py"]
+# Command to run the bot web server
+CMD ["gunicorn", "-b", "0.0.0.0:10000", "app:app"]

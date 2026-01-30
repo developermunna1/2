@@ -1,3 +1,5 @@
 selenium
 customtkinter
 webdriver-manager
+Flask
+gunicorn
