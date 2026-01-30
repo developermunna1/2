@@ -56,10 +56,7 @@ class App(ctk.CTk):
         self.show_browser_switch = ctk.CTkSwitch(self.option_frame, text="Show Browsers (Uncheck to Hide/Headless)", variable=self.show_browser_var, onvalue=True, offvalue=False)
         self.show_browser_switch.pack(side="left", padx=20, pady=10)
 
-        self.proxy_label = ctk.CTkLabel(self.option_frame, text="Proxy (IP:Port):")
-        self.proxy_label.pack(side="left", padx=5)
-        self.proxy_entry = ctk.CTkEntry(self.option_frame, width=200, placeholder_text="e.g. 127.0.0.1:8080")
-        self.proxy_entry.pack(side="left", padx=10)
+
 
         # Controls
         self.control_frame = ctk.CTkFrame(self)
@@ -128,25 +125,22 @@ class App(ctk.CTk):
         show_browser = self.show_browser_var.get()
         headless = not show_browser
         
-        worker_count = int(self.worker_slider.get())
-        show_browser = self.show_browser_var.get()
-        headless = not show_browser
-        proxy = self.proxy_entry.get().strip()
+
         
-        self.log(f"Starting with {len(numbers)} numbers using {worker_count} workers. Headless: {headless}. Proxy: {proxy if proxy else 'None'}...")
+        self.log(f"Starting with {len(numbers)} numbers using {worker_count} workers. Headless: {headless}...")
         
         # Create a queue and populate it with numbers
         number_queue = queue.Queue()
         for num in numbers:
             number_queue.put(num)
 
-        threading.Thread(target=self.run_workers, args=(number_queue, worker_count, headless, proxy), daemon=True).start()
+        threading.Thread(target=self.run_workers, args=(number_queue, worker_count, headless), daemon=True).start()
 
-    def run_workers(self, number_queue, worker_count, headless, proxy):
+    def run_workers(self, number_queue, worker_count, headless):
         # Create worker count number of threads
         threads = []
         for i in range(worker_count):
-            t = threading.Thread(target=worker_loop, args=(number_queue, self.log_queue, headless, proxy))
+            t = threading.Thread(target=worker_loop, args=(number_queue, self.log_queue, headless))
             t.start()
             threads.append(t)
             

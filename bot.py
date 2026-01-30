@@ -12,14 +12,12 @@ from selenium.webdriver.support import expected_conditions as EC
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class FacebookBot:
-    def __init__(self, headless=False, proxy=None):
+    def __init__(self, headless=False):
         self.headless = headless
-        self.proxy = proxy
         self.options = Options()
         if self.headless:
             self.options.add_argument("--headless")
-        if self.proxy:
-            self.options.add_argument(f"--proxy-server={self.proxy}")
+
         self.options.add_argument("--no-sandbox")
         self.options.add_argument("--disable-dev-shm-usage")
         self.options.add_argument("--disable-notifications")
@@ -210,11 +208,11 @@ class FacebookBot:
             if log_callback: log_callback(f"Error processing {phone_number}: {str(e)}")
             return "ERROR"
 
-def worker_loop(number_queue, log_queue, headless, proxy=None):
+def worker_loop(number_queue, log_queue, headless):
     """
     Continuous worker loop.
     """
-    bot = FacebookBot(headless=headless, proxy=proxy)
+    bot = FacebookBot(headless=headless)
     
     if not bot.start_browser():
         log_queue.put("Worker failed to start browser.")
